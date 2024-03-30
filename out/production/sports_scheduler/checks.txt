@@ -1,0 +1,396 @@
+- if all matches are over
+
+t1  - if has played all its matches
+    - if minimum days gap since previous match
+    - if minimum matches gap since previous match
+
+t2  - if t1 == t2
+    - if has played all its matches
+    - if has played all matches with t1
+    - if previous match was played against t1
+    - if minimum days gap since previous match
+    - if minimum matches gap since previous match
+
+if deadlock
+-
+
+else
+states to update
+- playedEachOtherCount 
+- lastPlayedDay
+- lastPlayedMatch
+- lastPlayedAgainstTeam
+- teamMatchesPlayed
+- schedule
+
+- if all matches played on that day
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ask chatgpt if it can find issues below after explaining what we are trying to achieve
+import java.util.*;
+
+class Scheduler {
+    String[] teams;
+    int numTeams;
+    int matchesBtwTeams;
+    int[] dayNumMatches;
+    int teamMatchesGap;
+    int teamDaysGap;
+
+    int numMatches;
+    int numDays;
+
+    int[][] playedEachOtherCount;
+    int[] lastPlayedDay, lastPlayedMatch;
+    String[] lastPlayedAgainstTeam;
+    int[] teamMatchesPlayed;
+
+    List<String[]> schedule;
+    List<List<String[]>> res;
+
+    public Scheduler(String[] teams, int matchesBtwTeams, int[] dayNumMatches, int teamMatchesGap, int teamDaysGap) {
+        if (teams.length < 2) {
+            throw new IllegalArgumentException("teams must have at least 2 teams");
+        } else if (matchesBtwTeams < 1) {
+            throw new IllegalArgumentException("matchesBtwTeams must be greater than 0");
+        } else if (dayNumMatches.length < 1) {
+            throw new IllegalArgumentException("dayNumMatches must have at least 1 element");
+        } else if (teamMatchesGap < 0) {
+            throw new IllegalArgumentException("teamMatchesGap must be greater than or equal to 0");
+        } else if (teamDaysGap < 0) {
+            throw new IllegalArgumentException("teamDaysGap must be greater than or equal to 0");
+        }
+
+        this.teams = teams;
+        this.numTeams = teams.length;
+        this.matchesBtwTeams = matchesBtwTeams;
+        this.dayNumMatches = dayNumMatches;
+        this.teamMatchesGap = teamMatchesGap;
+        this.teamDaysGap = teamDaysGap;
+
+        this.numMatches = numTeams * (numTeams - 1) * matchesBtwTeams;
+        this.numDays = calculateNumDays(numMatches, dayNumMatches);
+
+
+        this.playedEachOtherCount = new int[numTeams][numTeams];
+        this.lastPlayedDay = new int[numTeams];
+        this.lastPlayedMatch = new int[numTeams];
+        this.lastPlayedAgainstTeam = new String[numTeams];
+        this.teamMatchesPlayed = new int[numTeams];
+
+        this.schedule = new ArrayList<>();
+        this.res = new ArrayList<>();
+    }
+
+    public List<List<String[]>> standardSchedule(int curDay, int curMatch, int playedToday,boolean mustInit) {
+        if (mustInit) {
+            System.out.println("ready");
+            Arrays.fill(lastPlayedDay, -1000);
+            Arrays.fill(lastPlayedMatch, -1000);
+            Arrays.fill(lastPlayedAgainstTeam, "");
+        }
+        System.out.println("curMatch = " + curMatch);
+
+        if (schedule.size() == numMatches){
+            res.add(new ArrayList<>(schedule));
+            System.out.println("a schedule is formed");
+            return res;
+        }
+
+        for (int t1 = 0; t1 < numTeams; t1++) {
+             if (teamMatchesPlayed[t1] == (numTeams - 1) * matchesBtwTeams ||
+                     curDay - lastPlayedDay[t1] - 1 < teamDaysGap ||
+                     curMatch - lastPlayedMatch[t1] - 1 < teamMatchesGap
+             ) {
+                 continue;
+             }
+
+            for (int t2 = 0; t2 < numTeams; t2++) {
+                 if (t1 == t2 ||
+                         teamMatchesPlayed[t2] == (numTeams - 1) * matchesBtwTeams ||
+                         playedEachOtherCount[t1][t2] == matchesBtwTeams ||
+//                         (!lastPlayedAgainstTeam[t1].equals("")   && lastPlayedAgainstTeam[t1].equals(teams[t2])) ||
+                         curDay - lastPlayedDay[t2] - 1 < teamDaysGap ||
+                         curMatch - lastPlayedMatch[t2] - 1 < teamMatchesGap
+                 ) {
+                     continue;
+                 }
+
+                // t1 and t2 can play
+                //save the state
+                int temp1lastPlayedDay = lastPlayedDay[t1], tempt2lastPlayedDay = lastPlayedDay[t2];
+                int temp1lastPlayedMatch = lastPlayedMatch[t1], tempt2lastPlayedMatch = lastPlayedMatch[t2];
+                String temp1lastPlayedAgainstTeam = lastPlayedAgainstTeam[t1], tempt2lastPlayedAgainstTeam = lastPlayedAgainstTeam[t2];
+
+
+                //update the state
+                playedEachOtherCount[t1][t2]++; playedEachOtherCount[t2][t1]++;
+                lastPlayedDay[t1] = curDay; lastPlayedDay[t2] = curDay;
+                lastPlayedMatch[t1] = curMatch; lastPlayedMatch[t2] = curMatch;
+                lastPlayedAgainstTeam[t1] = teams[t2]; lastPlayedAgainstTeam[t2] = teams[t1];
+                teamMatchesPlayed[t1]++; teamMatchesPlayed[t2]++;
+                schedule.add(new String[] {teams[t1], teams[t2]});
+                playedToday++;
+
+                // backtrack
+                if (playedToday == dayNumMatches[curDay % dayNumMatches.length]) {
+                    standardSchedule(curDay + 1, curMatch+1, 0, false);
+                } else {
+                    standardSchedule(curDay, curMatch+1, playedToday + 1, false);
+                }
+
+                // return to the original state
+                playedToday--;
+                schedule.remove(schedule.size() - 1);
+                teamMatchesPlayed[t1]--; teamMatchesPlayed[t2]--;
+                lastPlayedAgainstTeam[t1] = temp1lastPlayedAgainstTeam; lastPlayedAgainstTeam[t2] = tempt2lastPlayedAgainstTeam;
+                lastPlayedMatch[t1] = temp1lastPlayedMatch; lastPlayedMatch[t2] = tempt2lastPlayedMatch;
+                lastPlayedDay[t1] = temp1lastPlayedDay; lastPlayedDay[t2] = tempt2lastPlayedDay;
+                playedEachOtherCount[t1][t2]--; playedEachOtherCount[t2][t1]--;
+            }
+        }
+
+        return res;
+    }
+
+    int calculateNumDays(int numMatches, int[] dayNumMatches) {
+        int res = 0, t1 = 0;
+        while (numMatches > 0) {
+            numMatches -= dayNumMatches[t1++ % dayNumMatches.length];
+            res++;
+        }
+        return res;
+    }
+}
+
+class Test {
+    public static void main(String[] args) {
+        Scheduler scheduler = new Scheduler(new String[] {"A", "B", "C"}, 2, new int[] {1}, 1, 1);
+        List<List<String[]>> schedules = scheduler.standardSchedule(0, 0, 0, true);
+        System.out.println("Number of schedules: " + schedules.size());
+
+        for (int i = 0; i < schedules.size(); i++) {
+            System.out.println("Schedule " + (i + 1) + ":");
+            List<String[]> schedule = schedules.get(i);
+
+            int dayNum = 1, matchNum = 1;
+            for (String[] match : schedule) {
+                System.out.println("\t Match " + matchNum + ", Day " + dayNum + ": " + match[0] + " vs " + match[1]);
+
+                if (matchNum == scheduler.dayNumMatches[(dayNum - 1) % scheduler.dayNumMatches.length]) {
+                    dayNum++;
+                    matchNum = 0;
+                } else {
+                    matchNum++;
+                }
+            }
+            System.out.println();
+        }
+    }
+}
+
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------
+v1 - duplicates
+
+import java.util.*;
+
+class Scheduler {
+    String[] teams;
+    int numTeams;
+    int matchesBtwTeams;
+    int[] dayNumMatches;
+    int teamMatchesGap;
+    int teamDaysGap;
+
+    int numMatches;
+    int numDays;
+
+    int[][] playedEachOtherCount;
+    int[] lastPlayedDay, lastPlayedMatch;
+    String[] lastPlayedAgainstTeam;
+    int[] teamMatchesPlayed;
+
+    List<String[]> schedule;
+    List<List<String[]>> res;
+
+    public Scheduler(String[] teams, int matchesBtwTeams, int[] dayNumMatches, int teamMatchesGap, int teamDaysGap) {
+        if (teams.length < 2) {
+            throw new IllegalArgumentException("teams must have at least 2 teams");
+        } else if (matchesBtwTeams < 1) {
+            throw new IllegalArgumentException("matchesBtwTeams must be greater than 0");
+        } else if (dayNumMatches.length < 1) {
+            throw new IllegalArgumentException("dayNumMatches must have at least 1 element");
+        } else if (teamMatchesGap < 0) {
+            throw new IllegalArgumentException("teamMatchesGap must be greater than or equal to 0");
+        } else if (teamDaysGap < 0) {
+            throw new IllegalArgumentException("teamDaysGap must be greater than or equal to 0");
+        }
+
+        this.teams = teams;
+        this.numTeams = teams.length;
+        this.matchesBtwTeams = matchesBtwTeams;
+        this.dayNumMatches = dayNumMatches;
+        this.teamMatchesGap = teamMatchesGap;
+        this.teamDaysGap = teamDaysGap;
+
+        this.numMatches = (numTeams * (numTeams - 1) * matchesBtwTeams)/2;
+        this.numDays = calculateNumDays(numMatches, dayNumMatches);
+
+
+        this.playedEachOtherCount = new int[numTeams][numTeams];
+        this.lastPlayedDay = new int[numTeams];
+        this.lastPlayedMatch = new int[numTeams];
+        this.lastPlayedAgainstTeam = new String[numTeams];
+        this.teamMatchesPlayed = new int[numTeams];
+
+        this.schedule = new ArrayList<>();
+        this.res = new ArrayList<>();
+    }
+
+    public List<List<String[]>> standardSchedule(int curDay, int curMatch, int playedToday, boolean allowTeamPairRecur, boolean mustInit) {
+        if (mustInit) {
+            System.out.println("ready");
+            Arrays.fill(lastPlayedDay, -1000);
+            Arrays.fill(lastPlayedMatch, -1000);
+            Arrays.fill(lastPlayedAgainstTeam, "");
+        }
+        System.out.println("curMatch = " + curMatch);
+
+
+        if (isScheduleReady((numTeams-1)*matchesBtwTeams)){
+            res.add(new ArrayList<>(schedule));
+            System.out.println("a schedule is formed");
+            return res;
+        }
+
+        boolean deadlocked = true;
+        for (int t1 = 0; t1 < numTeams; t1++) {
+            if (teamMatchesPlayed[t1] == (numTeams - 1) * matchesBtwTeams ||
+                    curDay - lastPlayedDay[t1] - 1 < teamDaysGap ||
+                    curMatch - lastPlayedMatch[t1] - 1 < teamMatchesGap
+            ) {
+                continue;
+            }
+
+            for (int t2 = 0; t2 < numTeams; t2++) {
+                if (t1 == t2 ||
+                        teamMatchesPlayed[t2] == (numTeams - 1) * matchesBtwTeams ||
+                        playedEachOtherCount[t1][t2] == matchesBtwTeams ||
+                        curDay - lastPlayedDay[t2] - 1 < teamDaysGap ||
+                        curMatch - lastPlayedMatch[t2] - 1 < teamMatchesGap
+                ) {
+                    continue;
+                }
+                if (!allowTeamPairRecur) {
+                    if (!lastPlayedAgainstTeam[t1].equals("")   && lastPlayedAgainstTeam[t1].equals(teams[t2]))
+                        continue;
+                }
+
+                deadlocked = false;
+                // t1 and t2 can play
+                //save the state
+                int temp1lastPlayedDay = lastPlayedDay[t1], tempt2lastPlayedDay = lastPlayedDay[t2];
+                int temp1lastPlayedMatch = lastPlayedMatch[t1], tempt2lastPlayedMatch = lastPlayedMatch[t2];
+                String temp1lastPlayedAgainstTeam = lastPlayedAgainstTeam[t1], tempt2lastPlayedAgainstTeam = lastPlayedAgainstTeam[t2];
+
+
+                //update the state
+                playedEachOtherCount[t1][t2]++; playedEachOtherCount[t2][t1]++;
+                lastPlayedDay[t1] = curDay; lastPlayedDay[t2] = curDay;
+                lastPlayedMatch[t1] = curMatch; lastPlayedMatch[t2] = curMatch;
+                lastPlayedAgainstTeam[t1] = teams[t2]; lastPlayedAgainstTeam[t2] = teams[t1];
+                teamMatchesPlayed[t1]++; teamMatchesPlayed[t2]++;
+                schedule.add(new String[] {teams[t1], teams[t2]});
+                playedToday++;
+
+                // backtrack
+                if (playedToday == dayNumMatches[curDay % dayNumMatches.length]) {
+                    standardSchedule(curDay + 1, curMatch+1, 0, allowTeamPairRecur, false);
+                } else {
+                    standardSchedule(curDay, curMatch+1, playedToday + 1, allowTeamPairRecur, false);
+                }
+
+                // return to the original state
+                playedToday--;
+                schedule.remove(schedule.size() - 1);
+                teamMatchesPlayed[t1]--; teamMatchesPlayed[t2]--;
+                lastPlayedAgainstTeam[t1] = temp1lastPlayedAgainstTeam; lastPlayedAgainstTeam[t2] = tempt2lastPlayedAgainstTeam;
+                lastPlayedMatch[t1] = temp1lastPlayedMatch; lastPlayedMatch[t2] = tempt2lastPlayedMatch;
+                lastPlayedDay[t1] = temp1lastPlayedDay; lastPlayedDay[t2] = tempt2lastPlayedDay;
+                playedEachOtherCount[t1][t2]--; playedEachOtherCount[t2][t1]--;
+            }
+        }
+
+        if (deadlocked) {
+            schedule.add(new String[]{"NA", "NA"});
+            if (playedToday+1 == dayNumMatches[curDay % dayNumMatches.length]) {
+                standardSchedule(curDay + 1, curMatch+1, 0, allowTeamPairRecur, false);
+                standardSchedule(curDay, curMatch+1, playedToday + 1, allowTeamPairRecur, false);
+            }
+            schedule.remove(schedule.size() - 1);
+        }
+
+        return res;
+    }
+
+    int calculateNumDays(int numMatches, int[] dayNumMatches) {
+        int res = 0, t1 = 0;
+        while (numMatches > 0) {
+            numMatches -= dayNumMatches[t1++ % dayNumMatches.length];
+            res++;
+        }
+        return res;
+    }
+
+    boolean isScheduleReady(int teamNumMatchesToPlay) {
+        for (int teamPlayed : teamMatchesPlayed) {
+            if (teamPlayed != teamNumMatchesToPlay)
+                return false;
+        }
+        return true;
+    }
+}
+
+class Test {
+    public static void main(String[] args) {
+        Scheduler scheduler = new Scheduler(new String[] {"A", "B", "C"}, 2, new int[] {1}, 1, 1);
+        List<List<String[]>> schedules = scheduler.standardSchedule(0, 0, 0, true, true);
+        System.out.println("Number of schedules: " + schedules.size());
+
+        for (int i = 0; i < schedules.size(); i++) {
+            System.out.println("Schedule " + (i + 1) + ":");
+            List<String[]> schedule = schedules.get(i);
+
+            int count = 1, dayNum = 1, matchNum = 1;
+            for (String[] match : schedule) {
+                System.out.println("\t " + count + ": Day " + dayNum + ", Match " + matchNum + ": " + match[0] + " vs " + match[1]);
+
+                if (matchNum == scheduler.dayNumMatches[(dayNum - 1) % scheduler.dayNumMatches.length]) {
+                    dayNum++;
+                    matchNum = 1;
+                } else {
+                    matchNum++;
+                }
+            }
+            System.out.println();
+        }
+    }
+}
