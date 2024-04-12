@@ -13,9 +13,6 @@
 > [!Important]
 > Uncertainty over accuracy of generating all possible permutations but each schedule passes parameter requirements and no duplicate permutation was generated **to the extent i tested.**
 
-> [!Note]
-> Number of matches for a day over one is broken at the moment
-
 ## Example
 IPL with 8 teams playing two matches against each other with one match played daily. No team can play on two consecutive days or matches. No two consecutive matches can have idetitcal team matchups and a day cannot be empty. Returns single schedule.
 ![image](https://github.com/sandeshShahapur/sportsScheduler/assets/110241292/2080f25b-ade6-4f2a-a56d-5b8efac49ba8)
