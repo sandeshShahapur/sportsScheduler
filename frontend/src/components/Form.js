@@ -49,7 +49,7 @@ const Form = ({ onFormSubmit }) => {
     <div>
       <form onSubmit={handleSubmit}>
         {/* Input fields for form parameters */}
-        <label htmlFor="teams">Teams:</label>
+        <label htmlFor="teams" className='label-block'>Teams:</label>
         <input
           type="text"
           id="teams"
@@ -61,7 +61,7 @@ const Form = ({ onFormSubmit }) => {
           required
         />
 
-        <label htmlFor="matchesBtwTeams">Matches Between Teams:</label>
+        <label htmlFor="matchesBtwTeams" className='label-block'>Matches Between Teams:</label>
         <input
           type="number"
           id="matchesBtwTeams"
@@ -73,7 +73,7 @@ const Form = ({ onFormSubmit }) => {
           required
         />
 
-        <label htmlFor="dayNumMatches">Day Number Matches:</label>
+        <label htmlFor="dayNumMatches" className='label-block'>Day Number Matches:</label>
         <input
           type="text"
           id="dayNumMatches"
@@ -85,7 +85,7 @@ const Form = ({ onFormSubmit }) => {
           required
         />
 
-        <label htmlFor="teamMatchesGap">Team Matches Gap:</label>
+        <label htmlFor="teamMatchesGap" className='label-block'>Team Matches Gap:</label>
         <input
           type="number"
           id="teamMatchesGap"
@@ -98,7 +98,7 @@ const Form = ({ onFormSubmit }) => {
           required
         />
 
-        <label htmlFor="teamDaysGap">Team Days Gap:</label>
+        <label htmlFor="teamDaysGap" className='label-block'>Team Days Gap:</label>
         <input
           type="number"
           id="teamDaysGap"
@@ -106,6 +106,19 @@ const Form = ({ onFormSubmit }) => {
           value={teamDaysGap}
           onChange={(e) => {
             setTeamDaysGap(e.target.value);
+          }}
+          min="0"
+          required
+        />
+        
+        <label htmlFor="opSchedCnt" className='label-block'>Output Schedule Count:</label>
+        <input
+          type="number"
+          id="opSchedCnt"
+          placeholder='0 for all schedules'
+          value={opSchedCnt}
+          onChange={(e) => {
+            setOpSchedCnt(e.target.value);
           }}
           min="0"
           required
@@ -119,7 +132,7 @@ const Form = ({ onFormSubmit }) => {
           value={alwEmtDay}
           onChange={() => setAlwEmtDay(!alwEmtDay)}
         />
-
+        <br/>
         <label htmlFor="alwTeamPairRecur">Allow Team Pair Recurrence:</label>
         <input
           type="checkbox"
@@ -128,19 +141,7 @@ const Form = ({ onFormSubmit }) => {
           value={alwTeamPairRecur}
           onChange={() => setAlwTeamPairRecur(!alwTeamPairRecur)}
         />
-
-        <label htmlFor="opSchedCnt">Output Schedule Count:</label>
-        <input
-          type="number"
-          id="opSchedCnt"
-          placeholder='0 for all schedules'
-          value={opSchedCnt}
-          onChange={(e) => {
-            setOpSchedCnt(e.target.value);
-          }}
-          min="0"
-          required
-        />
+        <br/>
         <div className='button-container'>
           {/* Submit button */}
           <button type="submit">Submit</button>

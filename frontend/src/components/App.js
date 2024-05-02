@@ -15,7 +15,7 @@ const App = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:8080/generateStandardSchedule', {
+      const response = await fetch('https://sportsscheduler-vxsj.onrender.com/generateStandardSchedule', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,6 +44,7 @@ const App = () => {
       <header>
         <h1>Sports Schedule Generator</h1>
       </header>
+      
       <main>
         <div className="form-container">
           {/* Form component to capture user input */}
@@ -62,12 +63,18 @@ const App = () => {
           {!error && <ScheduleTable schedules={schedules} />}
         </div>
         }
-
-        <div className="delay-note">
-          Please note: The server may experience delays due to inactivity.
-          If you encounter issues, please refresh the page or try again later.
-        </div>
       </main>
+
+      <div className='note-container'>
+        <div className="delay-note">
+            Please note: The server may experience delays due to inactivity.
+            If you encounter issues, please refresh the page or try again later.
+        </div>
+        <div className="adblocker-note">
+          If you are using any adblocker (eg: Brave Shield of Brave browser),
+          consider disabling it for proper functionality.
+        </div>
+      </div>
     </div>
   );
 };

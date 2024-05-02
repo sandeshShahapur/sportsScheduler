@@ -20,13 +20,6 @@ header {
   text-align: center;
 }
 
-footer {
-  background-color: #333;
-  color: white;
-  padding: 10px;
-  text-align: center;
-}
-
 /* Main content styles */
 main {
   flex: 1;
@@ -36,49 +29,31 @@ main {
   align-items: center;
 }
 
-.form-container {
-  width: 400px;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Form styles */
-label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-input[type='text'],
-input[type='number'],
-input[type='submit'] {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-}
-
-input[type='submit'] {
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-}
-
-input[type='submit']:hover {
-  background-color: #0056b3;
-}
-
 /* Error message */
 .error-message {
   color: red;
   margin-top: 10px;
 }
 
+.note-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .delay-note {
-  background-color: #f8d7da; /* Light red background color */
-  color: #721c24; /* Dark red text color */
+  background-color: #a371f7;
+  color: white;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #f5c6cb; /* Border color */
+  border-radius: 5px;
+}
+
+.adblocker-note {
+  background-color: #f8d7da;
+  color: #721c24;
   padding: 10px;
   margin-bottom: 20px;
   border: 1px solid #f5c6cb; /* Border color */
