@@ -57,10 +57,16 @@ const App = () => {
           {isLoading && <div>Loading...</div>}
           {/* Display error message if there is any */}
           {error && <div className='error-message'>{error}</div>}
+
           {/* Display ScheduleTable component with schedules */}
           {!error && <ScheduleTable schedules={schedules} />}
         </div>
         }
+
+        <div className="delay-note">
+          Please note: The server may experience delays due to inactivity.
+          If you encounter issues, please refresh the page or try again later.
+        </div>
       </main>
     </div>
   );
