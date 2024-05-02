@@ -1,0 +1,49 @@
+/* Form container */
+.form-container {
+    width: 400px;
+    margin: 0 auto;
+  }
+
+  /* Form label */
+  label {
+    display: block;
+    margin-bottom: 5px;
+    text-transform: capitalize;
+  }
+
+  /* Form input fields */
+  input[type="text"],
+  input[type="number"]{
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  input[type="checkbox"] {
+    display: inline;
+  }
+
+  /* Form submit button */
+  button[type="submit"],
+  button[type="button"] {
+    width: 48%;
+    padding: 10px;
+    margin-right: 2%;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  /* Adjust margin for the last button */
+  button:last-child {
+    margin-right: 0;
+  }
+
+  /* Error message */
+  .error-message {
+    color: red;
+    margin-top: 10px;
+  }
