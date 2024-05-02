@@ -1,5 +1,5 @@
 HELP.md
-target/
+# target/ ### commented because Render requires it through Dockerfile for hosting
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@CrossOrigin(origins="https://sandeshshahapur.github.io/")
+@CrossOrigin(origins="https://sandeshshahapur.github.io")
 @RestController
 public class SportsSchedulerController {
 
