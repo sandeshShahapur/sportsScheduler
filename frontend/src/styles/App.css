@@ -74,4 +74,8 @@ main {
   .schedule-table-container {
     margin-bottom: 150px;
   }
+
+  .loading-msg {
+    margin-bottom: 150px;
+  }
 }

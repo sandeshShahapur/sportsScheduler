@@ -56,8 +56,8 @@ const App = () => {
         <div className="schedule-container">
           {/* Display loading indicator while fetching data */}
           {isLoading &&
-          <div>
-            <div>Loading... <br/>If it is your first submit, it may take upto a minute</div>
+          <div className='loading-msg'>
+            Loading... <br/>If it is your first submit, it may take upto a minute
           </div>}
 
           {/* Display error message if there is any */}
