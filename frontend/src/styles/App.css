@@ -59,3 +59,19 @@ main {
   border: 1px solid #f5c6cb; /* Border color */
   border-radius: 5px;
 }
+
+@media (max-width: 768px) {
+  main {
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .form-container {
+    margin-top: 50px;
+    margin-bottom: 50px;
+  }
+
+  .schedule-table-container {
+    margin-bottom: 150px;
+  }
+}

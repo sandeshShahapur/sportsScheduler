@@ -30,7 +30,7 @@ const App = () => {
           throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      const data = await response.json();
+    const data = await response.json();
       setSchedules(data);
     } catch (error) {
       setError(error.message);
@@ -55,7 +55,11 @@ const App = () => {
         displayEmptySchedulesError &&
         <div className="schedule-container">
           {/* Display loading indicator while fetching data */}
-          {isLoading && <div>Loading...</div>}
+          {isLoading &&
+          <div>
+            <div>Loading... <br/>If it is your first submit, it may take upto a minute</div>
+          </div>}
+
           {/* Display error message if there is any */}
           {error && <div className='error-message'>{error}</div>}
 
@@ -66,13 +70,9 @@ const App = () => {
       </main>
 
       <div className='note-container'>
-        <div className="delay-note">
-            Please note: The server may experience delays due to inactivity.
-            Wait upto a minute for the schedule to be generated.
-        </div>
         <div className="adblocker-note">
           If you are using any adblocker (eg: Brave Shield of Brave browser),
-          consider disabling it for proper functionality.
+          consider disabling it if you faced an error when submitting.
         </div>
       </div>
     </div>

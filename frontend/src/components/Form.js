@@ -15,7 +15,7 @@ const Form = ({ onFormSubmit }) => {
   const [isValid, setIsValid] = useState(false);
 
   const fillWithExampleValues = () => {
-    setTeams("Sharks, Void, Titans, Nomads");
+    setTeams("Sharks, Thunder, Titans, Raptors");
     setMatchesBtwTeams("2");
     setDayNumMatches("1, 2");
     setTeamMatchesGap("1");
@@ -110,7 +110,7 @@ const Form = ({ onFormSubmit }) => {
           min="0"
           required
         />
-        
+
         <label htmlFor="opSchedCnt" className='label-block'>Output Schedule Count:</label>
         <input
           type="number"
