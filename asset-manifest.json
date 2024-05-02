@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/sportsScheduler/static/css/main.c0de1a17.css",
-    "main.js": "/sportsScheduler/static/js/main.34194413.js",
+    "main.js": "/sportsScheduler/static/js/main.f7394a9e.js",
     "static/js/453.8ab44547.chunk.js": "/sportsScheduler/static/js/453.8ab44547.chunk.js",
     "index.html": "/sportsScheduler/index.html",
     "main.c0de1a17.css.map": "/sportsScheduler/static/css/main.c0de1a17.css.map",
-    "main.34194413.js.map": "/sportsScheduler/static/js/main.34194413.js.map",
+    "main.f7394a9e.js.map": "/sportsScheduler/static/js/main.f7394a9e.js.map",
     "453.8ab44547.chunk.js.map": "/sportsScheduler/static/js/453.8ab44547.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.c0de1a17.css",
-    "static/js/main.34194413.js"
+    "static/js/main.f7394a9e.js"
   ]
 }
