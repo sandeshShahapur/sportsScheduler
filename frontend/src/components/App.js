@@ -44,7 +44,7 @@ const App = () => {
       <header>
         <h1>Sports Schedule Generator</h1>
       </header>
-      
+
       <main>
         <div className="form-container">
           {/* Form component to capture user input */}
@@ -68,7 +68,7 @@ const App = () => {
       <div className='note-container'>
         <div className="delay-note">
             Please note: The server may experience delays due to inactivity.
-            If you encounter issues, please refresh the page or try again later.
+            Wait upto a minute for the schedule to be generated.
         </div>
         <div className="adblocker-note">
           If you are using any adblocker (eg: Brave Shield of Brave browser),
