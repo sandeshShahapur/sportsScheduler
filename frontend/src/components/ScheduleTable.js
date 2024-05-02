@@ -22,6 +22,12 @@ const ScheduleTable = ({ schedules }) => {
     );
   }
 
+  // Shuffle the schedules array to display a random schedule by default
+  for (let i = schedules.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [schedules[i], schedules[j]] = [schedules[j], schedules[i]];
+  }
+
   const handleScheduleChange = (index) => {
     setSelectedScheduleIndex(index);
   };
