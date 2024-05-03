@@ -11,8 +11,6 @@ const Form = ({ onFormSubmit }) => {
   const [alwEmtDay, setAlwEmtDay] = useState(false);
   const [alwTeamPairRecur, setAlwTeamPairRecur] = useState(false);
   const [opSchedCnt, setOpSchedCnt] = useState('');
-  const [error, setError] = useState('');
-  const [isValid, setIsValid] = useState(false);
 
   const fillWithExampleValues = () => {
     setTeams("Sharks, Thunder, Titans, Raptors");
@@ -27,11 +25,16 @@ const Form = ({ onFormSubmit }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Perform form validation
 
-    // Form validation passed, construct JSON object with form data
+    // clean and shuffle teams
+    setTeams(teams.split(',').filter(Boolean).map(str => str.trim()));
+    for (let i = teams.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [teams[i], teams[j]] = [teams[j], teams[i]];
+    }
+
     const formData = {
-      teams: teams.split(',').filter(Boolean).map(str => str.trim()),
+      teams: teams,
       matchesBtwTeams: parseInt(matchesBtwTeams),
       dayNumMatches: dayNumMatches.split(',').map(Number),
       teamMatchesGap: parseInt(teamMatchesGap),
@@ -149,9 +152,6 @@ const Form = ({ onFormSubmit }) => {
           <button type="button" onClick={fillWithExampleValues}>Fill with Example Values</button>
         </div>
       </form>
-
-      {/* Display error message if there is any */}
-      {error && <div>{error}</div>}
     </div>
   );
 };
