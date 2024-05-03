@@ -9,7 +9,6 @@ const ScheduleTable = ({ schedules }) => {
   }
 
   if (schedules.length === 0) {
-    console.log(schedules);
     return (
       <div className="schedule-table-container">
         <div className="no-schedules-message">

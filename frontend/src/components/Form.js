@@ -26,15 +26,15 @@ const Form = ({ onFormSubmit }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // clean and shuffle teams
-    setTeams(teams.split(',').filter(Boolean).map(str => str.trim()));
-    for (let i = teams.length - 1; i > 0; i--) {
+    // clean and shuffle teams with a mutatable copy
+    let mutTeams = teams.split(',').filter(Boolean).map(str => str.trim());
+    for (let i = mutTeams.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [teams[i], teams[j]] = [teams[j], teams[i]];
+      [mutTeams[i], mutTeams[j]] = [mutTeams[j], mutTeams[i]];
     }
 
     const formData = {
-      teams: teams,
+      teams: mutTeams,
       matchesBtwTeams: parseInt(matchesBtwTeams),
       dayNumMatches: dayNumMatches.split(',').map(Number),
       teamMatchesGap: parseInt(teamMatchesGap),
