@@ -18,6 +18,13 @@
     border-radius: 5px;
   }
 
+  .schedule-table-wrapper {
+    max-height: 600px;
+    overflow-y: auto;
+    padding-right: 25px;
+    resize: vertical;
+  }
+
   .schedule-table {
     width: 100%;
     border-collapse: collapse;

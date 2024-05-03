@@ -50,26 +50,28 @@ const ScheduleTable = ({ schedules }) => {
       </div>
       <br />
       {/* Display the selected schedule in a table */}
-      <table className="schedule-table">
-        <thead>
-          <tr>
-            <th>Day</th>
-            <th>Match</th>
-            <th>Team 1</th>
-            <th>Team 2</th>
-          </tr>
-        </thead>
-        <tbody>
-          {selectedSchedule.map((match, index) => (
-            <tr key={index}>
-              <td>{match[0]}</td>
-              <td>{match[1]}</td>
-              <td>{match[2]}</td>
-              <td>{match[3]}</td>
+      <div className="schedule-table-wrapper">
+        <table className="schedule-table">
+          <thead>
+            <tr>
+              <th>Day</th>
+              <th>Match</th>
+              <th>Team 1</th>
+              <th>Team 2</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {selectedSchedule.map((match, index) => (
+              <tr key={index}>
+                <td>{match[0]}</td>
+                <td>{match[1]}</td>
+                <td>{match[2]}</td>
+                <td>{match[3]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

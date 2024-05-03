@@ -10,8 +10,12 @@ const App = () => {
   const [error, setError] = useState('');
 
   const handleGenerateSchedule = async (formData) => {
+    let fetchCompleted = false; //!  don't use react state to track fetch completion, doesn't work as expected
     setDisplayEmptySchedulesError(true);
-    setIsLoading(true);
+    setTimeout(() => {
+      if (!fetchCompleted)
+        setIsLoading(true);
+    }, 3000);
     setError('');
 
     try {
@@ -35,6 +39,7 @@ const App = () => {
     } catch (error) {
       setError(error.message);
     } finally {
+      fetchCompleted = true;
       setIsLoading(false);
     }
   };
@@ -64,7 +69,7 @@ const App = () => {
           {error && <div className='error-message'>{error}</div>}
 
           {/* Display ScheduleTable component with schedules */}
-          {!error && <ScheduleTable schedules={schedules} />}
+          {!error && !isLoading && <ScheduleTable schedules={schedules} />}
         </div>
         }
       </main>
