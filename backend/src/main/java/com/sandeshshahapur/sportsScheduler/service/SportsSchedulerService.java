@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +36,7 @@ public class SportsSchedulerService {
 
     long numMatches;
     long numDays;
+    LocalDate curDate;
 
     int[][] playedEachOtherCount;
     int[] lastPlayedDay, lastPlayedMatch;
@@ -72,6 +75,7 @@ public class SportsSchedulerService {
             long[] dayNumMatches,
             long teamMatchesGap,
             long teamDaysGap,
+            String curDate,
             boolean alwEmtDay,
             boolean alwTeamPairRecur,
             int opSchedCnt
@@ -96,6 +100,7 @@ public class SportsSchedulerService {
         this.dayNumMatches = dayNumMatches;
         this.teamMatchesGap = teamMatchesGap;
         this.teamDaysGap = teamDaysGap;
+        this.curDate = LocalDate.parse(curDate, DateTimeFormatter.ISO_DATE);
 
         this.numMatches = (numTeams * (numTeams - 1) * matchesBtwTeams) / 2;
         this.numDays = calculateNumDays(numMatches, dayNumMatches);
@@ -110,12 +115,13 @@ public class SportsSchedulerService {
         this.res = new ArrayList<>();
 
         intialiseState();
-        return backtrackSD(0, 0, 0, alwEmtDay, alwTeamPairRecur, opSchedCnt);
+        return backtrackSD(this.curDate ,0, 0, 0, alwEmtDay, alwTeamPairRecur, opSchedCnt);
     }
 
     /**
      * Generates a standard schedule for a sports event using backtracking.
      *
+     * @param curDate             The current date of the schedule.
      * @param curDay              The current day of the schedule.
      * @param curMatch            The current match of the schedule.
      * @param playedToday         The number of matches played on the current day.
@@ -125,6 +131,7 @@ public class SportsSchedulerService {
      * @return                    A list of lists representing the generated schedule.
      */
     List<List<String[]>> backtrackSD(
+            LocalDate curDate,
             int curDay,
             int curMatch,
             int playedToday,
@@ -199,19 +206,21 @@ public class SportsSchedulerService {
                 lastPlayedAgainstTeam[team2] = teams[team1];
                 teamMatchesPlayed[team1]++;
                 teamMatchesPlayed[team2]++;
-                schedule.add(new String[] {String.valueOf(curDay+1), String.valueOf(curMatch+1), teams[team1], teams[team2] });
+
+                addSchedule(schedule, curMatch, curDay, curDate, teams[team1], teams[team2]);
                 playedToday++;
 
                 // backtrack
                 int nextDay, newPlayedToday;
                 if (playedToday == dayNumMatches[curDay % dayNumMatches.length]) {
+                    curDate = curDate.plusDays(1);
                     nextDay = curDay + 1;
                     newPlayedToday = 0;
                 } else {
                     nextDay = curDay;
                     newPlayedToday = playedToday;
                 }
-                backtrackSD(nextDay, curMatch+1, newPlayedToday, alwEmtDay, alwTeamPairRecur, opSchedCnt);
+                backtrackSD(curDate, nextDay, curMatch+1, newPlayedToday, alwEmtDay, alwTeamPairRecur, opSchedCnt);
 
                 // return to the original state of the schedule to try other paths
                 playedToday--;
@@ -244,17 +253,18 @@ public class SportsSchedulerService {
                 return res;
 
             playedToday++;
-            schedule.add(new String[] {String.valueOf(curDay+1), String.valueOf(curMatch+1), "NA", "NA" });
+            addSchedule(schedule, curMatch, curDay, curDate, "NA", "NA");
             // DRY this
             int nextDay, newPlayedToday;
             if (playedToday == dayNumMatches[curDay % dayNumMatches.length]) {
+                curDate = curDate.plusDays(1);
                 nextDay = curDay + 1;
                 newPlayedToday = 0;
             } else {
                 nextDay = curDay;
                 newPlayedToday = playedToday;
             }
-            backtrackSD(nextDay, curMatch+1, newPlayedToday, alwEmtDay, alwTeamPairRecur, opSchedCnt);
+            backtrackSD(curDate, nextDay, curMatch+1, newPlayedToday, alwEmtDay, alwTeamPairRecur, opSchedCnt);
             schedule.remove(schedule.size() - 1);
         }
 
@@ -277,5 +287,16 @@ public class SportsSchedulerService {
                 return false;
         }
         return true;
+    }
+
+    void addSchedule(List<String[]> schedule, int curMatch, int curDay, LocalDate curDate, String team1, String team2) {
+        schedule.add(new String[] {
+                String.valueOf(curMatch+1),  // Match number
+                String.valueOf(curDay+1),  // Day number
+                curDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy")),  // Date
+                curDate.getDayOfWeek().toString(),  // Week Day
+                team1,  // Team 1
+                team2  // Team 2
+        });
     }
 }

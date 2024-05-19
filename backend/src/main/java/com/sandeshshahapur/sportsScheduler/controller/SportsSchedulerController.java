@@ -29,6 +29,7 @@ public class SportsSchedulerController {
                     request.getDayNumMatches(),
                     request.getTeamMatchesGap(),
                     request.getTeamDaysGap(),
+                    request.getCurDate(),
                     request.isAlwEmtDay(),
                     request.isAlwTeamPairRecur(),
                     request.getOpSchedCnt()
